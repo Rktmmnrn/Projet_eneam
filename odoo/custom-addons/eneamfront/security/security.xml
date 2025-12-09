@@ -1,0 +1,29 @@
+<odoo>
+    <!-- Déclaration explicite du modèle pour permettre les refs dans les règles -->
+    <record id="model_eneam_pointage" model="ir.model">
+        <field name="name">Pointage ENEAM</field>
+        <field name="model">eneam.pointage</field>
+    </record>
+
+    <!-- Group DG / Responsable -->
+    <record id="group_eneam_responsable" model="res.groups">
+        <field name="name">ENEAM - Responsable / DG</field>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- Règles multi société -->
+    <record id="rule_pointage_own" model="ir.rule">
+        <field name="name">Pointage : utilisateur ne voit que ses lignes</field>
+        <field name="model_id" ref="model_eneam_pointage"/>
+        <field name="domain_force">['|', ('personnel_id.user_id', '=', user.id), ('personnel_id.user_id', '=', False)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Regle pr responsable : tt voir -->
+    <record id="rule_pointage_all" model="ir.rule">
+        <field name="name">Pointage - Responsable : tout voir</field>
+        <field name="model_id" ref="model_eneam_pointage"/>
+        <field name="domain_force">[(1, '=' ,1)]</field>
+        <field name="groups" eval="[(4, ref('eneamfront.group_eneam_responsable'))]"/>
+    </record>
+</odoo>

@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_eneam_pointage,eneam.pointage,model_eneam_pointage,base.group_user,1,1,1,0
+access_eneam_pointage_manager,eneam.pointage,model_eneam_pointage,eneamfront.group_eneam_responsable,1,1,1,1

@@ -1,0 +1,92 @@
+version: '3.9'
+
+services:
+  # 🐳 PostgreSQL Container
+  postgres-django:
+    image: postgres:15
+    container_name: postgres-django
+    environment:
+      POSTGRES_DB: eneampointage
+      POSTGRES_USER: eneamuser
+      POSTGRES_PASSWORD: "eneamuser2025@."
+    ports:
+      - "5433:5432"                  # Expose PostgreSQL sur le port 5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Persistance des données
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eneamuser -d eneampointage"]
+      interval: 15s
+      timeout: 15s
+      retries: 20
+      start_period: 30s
+    networks:
+      - eneam-network
+
+  postgres-odoo:
+    image: postgres:15
+    container_name: postgres-odoo
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    ports:
+      - "5434:5432"                  # Expose PostgreSQL sur le port 5432
+    volumes:
+      - odoo-data-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d databaseOdoo"]
+      interval: 15s
+      timeout: 15s
+      retries: 20
+      start_period: 30s
+    networks:
+      - eneam-network
+
+  # 🐳 Django Container  
+  django:
+    build: ./django                  # Construit depuis le dossier django/
+    ports:
+      - "8000:8000"                  # API Django sur port 8000
+    environment:
+      - DB_HOST=postgres-django
+      - DB_NAME=eneampointage
+      - DB_USER=eneamuser
+      - DB_PASSWORD=eneamuser2025@.
+      - DJANGO_SECRET_KEY=replace-for-prod
+      - DJANGO_DEBUG=True
+    depends_on:
+      postgres-django:
+        condition: service_healthy
+    volumes:
+      - ./django/code:/app/code             # Monte le projet Django (contenant manage.py)
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+            python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - eneam-network
+
+  # 🐳 Odoo Container
+  odoo:
+    build: ./odoo                    # Construit depuis le dossier odoo/
+    restart: unless-stopped
+    ports:
+      - "8069:8069"                  # Odoo accessible sur port 8069
+    depends_on:
+      postgres-odoo:
+        condition: service_healthy
+    volumes:
+      - odoo-filestore:/var/lib/odoo
+      - ./odoo/custom-addons:/mnt/extra-addons  # Monte vos modules
+    networks:
+      - eneam-network
+
+# Volumes pour persistance des données
+volumes:
+  postgres-data:
+  odoo-data-pg:
+  odoo-filestore:
+
+# Réseau interne pour communication entre containers
+networks:
+  eneam-network:
+    driver: bridge
