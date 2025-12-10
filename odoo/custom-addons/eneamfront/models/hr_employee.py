@@ -24,7 +24,7 @@ class HrEmployee(models.Model):
 
         # VÉRIFICATION 2: L'employé existe-t-il dans Django ?
         try:
-            api_url = "http://django:8000/api/personnel/"
+            api_url = "http://192.168.88.5:8000/api/personnel/"
             # api_url = "http://127.0.0.1:8000/api/personnel/"
             params = {'matricule': self.matricule}  # ← Recherche par MATRICULE maintenant
             

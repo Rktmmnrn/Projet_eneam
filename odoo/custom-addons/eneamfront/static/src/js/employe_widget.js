@@ -44,6 +44,7 @@ function loadNomEmploye(apiPersonnel, matricule) { // Charger le nom de l'employ
             const employe = Array.isArray(data) ?
                 data.find(p => String(p.matricule) === String(matricule)) : null;
             const nomEl = document.getElementById('nom_complet');
+            console.log("Employé trouvé:", employe.nom);
             if (nomEl) {
                 nomEl.textContent = employe ?
                     `${employe.nom || ''} ${employe.prenom || ''}`.trim() || 'Inconnu' :

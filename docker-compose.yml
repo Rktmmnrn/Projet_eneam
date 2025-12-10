@@ -65,6 +65,16 @@ services:
     networks:
       - eneam-network
 
+  # 🐳 MailHog Container
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"                  # Interface web pr voir les mails
+      - "1025:1025"                  # SMTP MailHog - pour odoo
+    networks:
+      - eneam-network
+
   # 🐳 Odoo Container
   odoo:
     build: ./odoo                    # Construit depuis le dossier odoo/
@@ -74,6 +84,8 @@ services:
     depends_on:
       postgres-odoo:
         condition: service_healthy
+      mailhog:
+        condition: service_started
     volumes:
       - odoo-filestore:/var/lib/odoo
       - ./odoo/custom-addons:/mnt/extra-addons  # Monte vos modules

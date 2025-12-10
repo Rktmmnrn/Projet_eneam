@@ -21,7 +21,7 @@ class EneamPointage(models.Model):
     synced         = fields.Boolean(string='Synchronisé avec Django', default=False)
 
     # DJANGO_URL = "http://127.0.0.1:8000/api"
-    DJANGO_URL = "http://django:8000/api"
+    DJANGO_URL = "http://192.168.88.5:8000/api"
 
     # -----------------
     # Bouton ARRIVÉE

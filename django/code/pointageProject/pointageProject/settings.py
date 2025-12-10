@@ -31,7 +31,7 @@ ALLOWED_HOSTS = [
     'django',
     '127.0.0.1',
     '0.0.0.0',
-    '192.168.88.20', # Adresse IP actuelle statique
+    '192.168.88.5', # Adresse IP actuelle statique
     '*', # test
 ]
 
