@@ -3,6 +3,7 @@ from odoo.exceptions import UserError
 import requests
 import json
 from datetime import datetime
+import os
 
 class EneamPointage(models.Model):
     _name = 'eneam.pointage'
@@ -20,8 +21,33 @@ class EneamPointage(models.Model):
     notes          = fields.Text(string='Notes')
     synced         = fields.Boolean(string='Synchronisé avec Django', default=False)
 
-    # DJANGO_URL = "http://127.0.0.1:8000/api"
-    DJANGO_URL = "http://192.168.88.5:8000/api"
+    # DJANGO URL configuration:
+    # - Environment variable `ENEAMFRONT_DJANGO_URL` (highest priority)
+    # - Odoo system parameter `eneamfront.django_url` (settable via Settings > System Parameters)
+    # - Fallback to `http://localhost:8000/api`
+
+    def _get_django_url(self):
+        """Return the configured Django API base URL without trailing slash.
+
+        Priority: ENEAMFRONT_DJANGO_URL env var -> ir.config_parameter 'eneamfront.django_url' -> docker network fallback.
+        Inside Docker, use 'django' service name. Outside (localhost), use 'localhost' or IP.
+        """
+        # check environment variable first
+        env_url = os.environ.get('ENEAMFRONT_DJANGO_URL')
+        if env_url:
+            url = env_url
+        else:
+            # then check Odoo system parameters
+            params = self.env['ir.config_parameter'].sudo()
+            cfg = params.get_param('eneamfront.django_url', default=False)
+            if cfg:
+                url = cfg
+            else:
+                # Default for Docker: use service name 'django' inside the eneam-network
+                url = 'http://django:8000/api'
+
+        # normalize: remove trailing slash if present
+        return url.rstrip('/')
 
     # -----------------
     # Bouton ARRIVÉE
@@ -50,7 +76,8 @@ class EneamPointage(models.Model):
             'appareil_id': 'odoo_front',
         }
 
-        resp = requests.post(f"{self.DJANGO_URL}/pointage/", json=data, headers={'Content-Type': 'application/json'})
+        base = self._get_django_url()
+        resp = requests.post(f"{base}/pointage/", json=data, headers={'Content-Type': 'application/json'})
 
         if resp.status_code not in (201, 200):
             raise UserError(_("Erreur Django : %s") % resp.text)

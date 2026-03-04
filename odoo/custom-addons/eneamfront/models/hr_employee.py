@@ -24,8 +24,8 @@ class HrEmployee(models.Model):
 
         # VÉRIFICATION 2: L'employé existe-t-il dans Django ?
         try:
-            api_url = "http://192.168.88.5:8000/api/personnel/"
-            # api_url = "http://127.0.0.1:8000/api/personnel/"
+            # Inside Docker network, use 'django' service name
+            api_url = "http://django:8000/api/personnel/"
             params = {'matricule': self.matricule}  # ← Recherche par MATRICULE maintenant
             
             response = requests.get(api_url, params=params, timeout=10)
@@ -48,12 +48,15 @@ class HrEmployee(models.Model):
 
         # CRÉATION du compte Odoo
         try:
-            group_user = self.env.ref('base.group_user')
+            # Récupérer le groupe d'employé (pour limiter l'accès au site web)
+            group_employee = self.env.ref('eneamfront.group_eneam_employee')
+            group_portal = self.env.ref('base.group_portal')
+            
             user = self.env['res.users'].sudo().create({
                 'name': self.name,
                 'login': self.work_email, 
                 'email': self.work_email,
-                'groups_id': [(4, group_user.id)],
+                'groups_id': [(4, group_portal.id), (4, group_employee.id)],  # Portal + Employee group
             })
 
             # ASSOCIATION compte Odoo → employé
@@ -67,7 +70,7 @@ class HrEmployee(models.Model):
                 'tag': 'display_notification',
                 'params': {
                     'title': _('Succès'),
-                    'message': _('Compte Odoo créé pour %s (Matricule: %s)') % (self.name, self.matricule),
+                    'message': _('Compte Odoo créé pour %s (Matricule: %s) - Accès site web uniquement') % (self.name, self.matricule),
                     'type': 'success',
                     'sticky': False,
                 }

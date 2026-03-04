@@ -31,7 +31,7 @@ ALLOWED_HOSTS = [
     'django',
     '127.0.0.1',
     '0.0.0.0',
-    '192.168.88.5', # Adresse IP actuelle statique
+    # '192.168.88.5', # Adresse IP actuelle statique
     '*', # test
 ]
 
@@ -63,8 +63,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS_ALLOWED_ORIGINS = ["http://localhost:8069"]
-CORS_ALLOW_ALL_ORIGINS = True # test
+CORS_ALLOWED_ORIGINS = ["http://localhost:8069"]
+# CORS_ALLOW_ALL_ORIGINS = True # test
 
 ROOT_URLCONF = 'pointageProject.urls'
 

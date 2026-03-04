@@ -15,7 +15,7 @@ def pointage_list(request):
     GET /api/pointage/?date=2024-01-15&matricule=EMP001
     POST /api/pointage/ - Créer un pointage individuel
     """
-    
+
     # GESTION DES ERREURS pour GET
     if request.method == 'GET':
         try:

@@ -28,8 +28,9 @@ class Eneamfront (http.Controller):
 
 
     def _page_dg(self):
-        # base_url = "http://127.0.0.1:8000/api"          # back Django
-        base_url = "http://192.168.88.5:8000/api"
+        base_url = "http://127.0.0.1:8000/api"          # back Django
+        # base_url = "http://192.168.88.5:8000/api"
+        # base_url = "http://192.168.43.172:8000/api"
         today = fields.Date.today()
         return request.render('eneamfront.page_dg', {
             'api_url': base_url + '/pointage/',
@@ -42,10 +43,12 @@ class Eneamfront (http.Controller):
         return request.render('eneamfront.page_employe', {
             'employee': employee,
             'matricule': employee.matricule,
-            'api_personnel_url': 'http://192.168.88.5:8000/api/personnel/',
-            # 'api_personnel_url': 'http://127.0.0.1:8000/api/personnel/',
-            'api_pointage_url': 'http://192.168.88.5:8000/api/pointage/',
-            # 'api_pointage_url': 'http://127.0.0.1:8000/api/pointage/',
+            # 'api_personnel_url': 'http://192.168.43.172:8000/api/personnel/',
+            # 'api_personnel_url': 'http://192.168.88.5:8000/api/personnel/',
+            'api_personnel_url': 'http://127.0.0.1:8000/api/personnel/',
+            # 'api_pointage_url': 'http://192.168.43.172:8000/api/pointage/',
+            # 'api_pointage_url': 'http://192.168.88.5:8000/api/pointage/',
+            'api_pointage_url': 'http://127.0.0.1:8000/api/pointage/',
         })
 
 

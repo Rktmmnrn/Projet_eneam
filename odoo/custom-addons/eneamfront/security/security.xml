@@ -5,25 +5,32 @@
         <field name="model">eneam.pointage</field>
     </record>
 
-    <!-- Group DG / Responsable -->
+    <!-- GROUP 1: Employé normal - accès site web uniquement -->
+    <record id="group_eneam_employee" model="res.groups">
+        <field name="name">ENEAM - Employé</field>
+        <field name="comment">Employés normaux - accès site web uniquement</field>
+    </record>
+
+    <!-- GROUP 2: Responsable / Admin - accès complet -->
     <record id="group_eneam_responsable" model="res.groups">
         <field name="name">ENEAM - Responsable / DG</field>
+        <field name="comment">Administrateurs - accès complet</field>
         <field name="users" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 
-    <!-- Règles multi société -->
-    <record id="rule_pointage_own" model="ir.rule">
-        <field name="name">Pointage : utilisateur ne voit que ses lignes</field>
+    <!-- Règle 1: Employé voit ses pointages uniquement -->
+    <record id="rule_pointage_employee" model="ir.rule">
+        <field name="name">Pointage - Employé : voir ses pointages</field>
         <field name="model_id" ref="model_eneam_pointage"/>
         <field name="domain_force">['|', ('personnel_id.user_id', '=', user.id), ('personnel_id.user_id', '=', False)]</field>
-        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="groups" eval="[(4, ref('group_eneam_employee'))]"/>
     </record>
 
-    <!-- Regle pr responsable : tt voir -->
-    <record id="rule_pointage_all" model="ir.rule">
+    <!-- Règle 2: Responsable voit tous les pointages -->
+    <record id="rule_pointage_admin" model="ir.rule">
         <field name="name">Pointage - Responsable : tout voir</field>
         <field name="model_id" ref="model_eneam_pointage"/>
-        <field name="domain_force">[(1, '=' ,1)]</field>
+        <field name="domain_force">[(1, '=', 1)]</field>
         <field name="groups" eval="[(4, ref('eneamfront.group_eneam_responsable'))]"/>
     </record>
 </odoo>
