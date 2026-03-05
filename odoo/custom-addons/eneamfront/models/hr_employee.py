@@ -25,7 +25,8 @@ class HrEmployee(models.Model):
         # VÉRIFICATION 2: L'employé existe-t-il dans Django ?
         try:
             # Inside Docker network, use 'django' service name
-            api_url = "http://django:8000/api/personnel/"
+            # api_url = "http://django:8000/api/personnel/"
+            api_url = "http://127.0.0.1:8000/api/personnel/"
             params = {'matricule': self.matricule}  # ← Recherche par MATRICULE maintenant
             
             response = requests.get(api_url, params=params, timeout=10)
@@ -46,17 +47,18 @@ class HrEmployee(models.Model):
         except requests.exceptions.RequestException as e:
             raise UserError(_('Erreur connexion Django: %s') % str(e))
 
-        # CRÉATION du compte Odoo
+            # CRÉATION du compte Odoo
         try:
             # Récupérer le groupe d'employé (pour limiter l'accès au site web)
             group_employee = self.env.ref('eneamfront.group_eneam_employee')
             group_portal = self.env.ref('base.group_portal')
+            group_internal = self.env.ref('base.group_user')  # "Utilisateur interne"
             
             user = self.env['res.users'].sudo().create({
                 'name': self.name,
                 'login': self.work_email, 
                 'email': self.work_email,
-                'groups_id': [(4, group_portal.id), (4, group_employee.id)],  # Portal + Employee group
+                'groups_id': [(4, group_internal.id), (4, group_portal.id), (4, group_employee.id)],  # Internal + Portal + Employee group
             })
 
             # ASSOCIATION compte Odoo → employé

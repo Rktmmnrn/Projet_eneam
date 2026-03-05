@@ -9,6 +9,7 @@
     <record id="group_eneam_employee" model="res.groups">
         <field name="name">ENEAM - Employé</field>
         <field name="comment">Employés normaux - accès site web uniquement</field>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 
     <!-- GROUP 2: Responsable / Admin - accès complet -->

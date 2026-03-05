@@ -1,3 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_eneam_pointage_employee,eneam.pointage - employee,model_eneam_pointage,group_eneam_employee,1,1,1,0
 access_eneam_pointage_admin,eneam.pointage - admin,model_eneam_pointage,eneamfront.group_eneam_responsable,1,1,1,1
+access_hr_employee_employee,hr.employee - employee,model_hr_employee,group_eneam_employee,1,0,0,0
+access_hr_employee_admin,hr.employee - admin,model_hr_employee,eneamfront.group_eneam_responsable,1,1,1,0

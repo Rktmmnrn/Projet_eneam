@@ -80,6 +80,8 @@ services:
     restart: unless-stopped
     ports:
       - "8069:8069"                  # Odoo accessible sur port 8069
+    environment:
+      - ENEAMFRONT_DJANGO_URL=http://django:8000/api
     depends_on:
       postgres-odoo:
         condition: service_healthy
