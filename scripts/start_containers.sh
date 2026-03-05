@@ -9,7 +9,7 @@ Usage: $0 [docker|podman|compose]
   docker  - Start system Docker (requires sudo)
   podman  - Enable user podman.socket and prints DOCKER_HOST export
   compose - Run 'docker-compose up --build' (uses current environment)
-EOF
+EOF.
 }
 
 if [ "$#" -lt 1 ]; then
