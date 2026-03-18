@@ -2,7 +2,8 @@ from odoo import http, fields
 from odoo.http import request
 
 class Eneamfront (http.Controller):
-    
+
+
     @http.route('/pointage', auth='user', website=True)
     def pointage(self, **kw):
         user = request.env.user
@@ -28,12 +29,12 @@ class Eneamfront (http.Controller):
 
 
     def _page_dg(self):
+        base_url_server = "http://django:8000/api"  # Docker network
+        base_url_browser = "http://127.0.0.1:8000/api"  # localhost only
         # Use docker service name for inter-container communication
-        # base_url = "http://django:8000/api"  # Docker network
-        base_url = "http://127.0.0.1:8000/api"  # localhost only
         today = fields.Date.today()
         return request.render('eneamfront.page_dg', {
-            'api_url': base_url + '/pointage/',
+            'api_url': base_url_browser + '/pointage/',
             'today': today,
         })
 
@@ -41,13 +42,13 @@ class Eneamfront (http.Controller):
     def _page_employe(self, employee):
         """Page employé avec données de l'employé connecté"""
         # Use docker service name for inter-container communication
-        # base_url = "http://django:8000/api"  # Docker network
-        base_url = "http://127.0.0.1:8000/api"  # localhost only
+        # base_url_server = "http://django:8000/api"  # Docker network
+        base_url_browser = "http://127.0.0.1:8000/api"  # localhost only
         return request.render('eneamfront.page_employe', {
             'employee': employee,
             'matricule': employee.matricule,
-            'api_personnel_url': base_url + '/personnel/',
-            'api_pointage_url': base_url + '/pointage/',
+            'api_personnel_url': base_url_browser + '/personnel/',
+            'api_pointage_url': base_url_browser + '/pointage/',
         })
 
 

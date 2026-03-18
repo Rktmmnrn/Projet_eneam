@@ -44,8 +44,8 @@ class EneamPointage(models.Model):
                 url = cfg
             else:
                 # Default for Docker: use service name 'django' inside the eneam-network
-                # url = 'http://django:8000/api'
-                url = 'http://127.0.0.1:8000/api'
+                url = 'http://django:8000/api'
+                # url = 'http://127.0.0.1:8000/api'
 
         # normalize: remove trailing slash if present
         return url.rstrip('/')
